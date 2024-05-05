@@ -13,13 +13,15 @@ const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
           {new Date(props.createdAt!).toTimeString()}
         </p>
       </div>
-      <p>{props.mensagem}</p>
-      <p>
-        Local: {props.endereco.cidade} - {props.endereco.bairro}
-      </p>
-      <p className="text-orange-600">
-        Número de pessoas: {props.numeroPessoas}
-      </p>
+      <div className="text-gray-600">
+        <p>{props.mensagem}</p>
+        <p>
+          Local: {props.endereco.cidade} - {props.endereco.bairro}
+        </p>
+        <p className="text-orange-600">
+          Número de pessoas: {props.numeroPessoas}
+        </p>
+      </div>
     </div>
   );
 };
