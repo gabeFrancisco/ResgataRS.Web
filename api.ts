@@ -1,4 +1,4 @@
-import axios, { InternalAxiosRequestConfig } from "axios";
+import axios from "axios";
 
 const urls = {
   dev: "http://localhost:5112/api",

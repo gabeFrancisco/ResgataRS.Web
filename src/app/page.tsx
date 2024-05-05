@@ -6,8 +6,8 @@ import { MapContainer } from "react-leaflet/MapContainer";
 import { TileLayer } from "react-leaflet/TileLayer";
 import api from "../../api";
 import { Solicitacao } from "@/models/Solicitacao";
-// import { useMap } from "react-leaflet/hooks";
 import SolicitacaoCard from "@/components/SolicitacaoCard";
+import { LatLngExpression } from "leaflet";
 
 export default function Home() {
   const [solicitacoes, setSolicitacoes] = useState<Solicitacao[]>([]);
@@ -36,10 +36,14 @@ export default function Home() {
           {solicitacoes.map((el, key) => (
             <Marker
               key={key}
-              position={el.endereco.coordernadas
-                .split(",")
-                .map((item) => parseFloat(item))}
-            ></Marker>
+              position={
+                el.endereco.coordernadas
+                  .split(",")
+                  .map((item) => parseFloat(item)) as LatLngExpression
+              }
+            >
+              <Popup>Número de pessoas: {el.numeroPessoas}</Popup>
+            </Marker>
           ))}
         </MapContainer>
       ) : null}
@@ -60,7 +64,7 @@ export default function Home() {
         </div>
         <hr />
         {solicitacoes.map((el, key) => (
-          <SolicitacaoCard props={el} />
+          <SolicitacaoCard props={el} key={key} />
         ))}
       </div>
     </main>
