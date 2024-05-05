@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import Mapa from "@/components/Mapa";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,7 +29,12 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <Header />
-        {children}
+        <main className="flex flex-col lg:flex-row min-h-screen justify-between p-3">
+          <Mapa />
+          <div className="p-3 my-2 mx-0 lg:mx-3 lg:my-0 border rounded h-full w-full lg:w-1/2 text-gray-800 shadow">
+            {children}
+          </div>
+        </main>
       </body>
     </html>
   );
