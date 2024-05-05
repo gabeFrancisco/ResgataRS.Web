@@ -2,7 +2,7 @@ import axios, { InternalAxiosRequestConfig } from "axios";
 
 const urls = {
   dev: "http://localhost:5112/api",
-  prod: "",
+  prod: "resgaters.azurewebsites.net/api",
 };
 
 export const apiUrl =
