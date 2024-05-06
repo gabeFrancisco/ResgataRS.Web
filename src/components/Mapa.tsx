@@ -7,6 +7,7 @@ import { TileLayer } from "react-leaflet/TileLayer";
 import { Solicitacao } from "@/models/Solicitacao";
 import { LatLngExpression } from "leaflet";
 import api from "../../api";
+import LocationMarker from "./LocationMarker";
 
 const Mapa = () => {
   const [solicitacoes, setSolicitacoes] = useState<Solicitacao[]>([]);
@@ -27,6 +28,7 @@ const Mapa = () => {
           style={{ width: "100%" }}
           className="border shadow rounded w-10/12 min-h-96 lg:h-screen flex-1"
         >
+          <LocationMarker />
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
