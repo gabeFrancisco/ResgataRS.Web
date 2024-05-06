@@ -5,6 +5,7 @@ import React from "react";
 import * as Yup from "yup";
 import api from "../../../api";
 import { Solicitacao } from "@/models/Solicitacao";
+import Link from "next/link";
 
 const page = () => {
   const formik = useFormik({
@@ -72,21 +73,23 @@ const page = () => {
     <div className="text-sm h-full">
       <h3>Nova solicitação:</h3>
       <hr />
-      {formik.errors.nome ?? (
-        <small className="my-2 text-red-500">{formik.errors.nome}</small>
-      )}
       <form method="post">
+        <div className="my-2 text-red-500">
+          <small>Campos com * são obrigatórios!</small>
+        </div>
         <div className="my-3 flex flex-row items-center">
-          <label htmlFor="nome">Nome</label>
+          <label htmlFor="nome">Nome*</label>
           <input
-            className="border rounded mx-3 w-2/3 lg:w-full"
+            className={`rounded border mx-3 w-2/3 lg:w-full ${
+              formik.errors.nome && "border-red-500"
+            }`}
             type="text"
             name="nome"
             id="nome"
             value={formik.values.nome}
             onChange={formik.handleChange}
           />
-          <label htmlFor="cpf_rg">CPF/RG</label>
+          <label htmlFor="cpf_rg">CPF/RG*</label>
           <input
             className="border rounded mx-3 w-2/3 lg:w-full"
             type="text"
@@ -106,7 +109,10 @@ const page = () => {
             value={formik.values.telefone}
             onChange={formik.handleChange}
           />
-          <label htmlFor="coordenadas">Coordenadas</label>
+        </div>
+        <hr />
+        <div className="my-3 flex flex-row items-center">
+          <label htmlFor="coordenadas">Coordenadas*</label>
           <input
             className="border rounded mx-3 w-2/3 lg:w-full"
             type="text"
@@ -116,7 +122,17 @@ const page = () => {
             onChange={formik.handleChange}
             // readOnly
           />
+          <button
+            type="button"
+            className="bg-green-500 rounded border-green-300 px-2 py-1 text-sm text-white hover:bg-green-600"
+          >
+            Carregar!
+          </button>
         </div>
+        <small>
+          Clique em um ponto do mapa para marcar sua localização ou use o GPS do
+          seu celular e clique no botão ao lado para localizar automaticamente
+        </small>
         <hr />
         <div className="my-3">
           <div className="flex flex-row items-center">
@@ -225,14 +241,23 @@ const page = () => {
             onChange={formik.handleChange}
           />
         </div>
-        <button
-          type="button"
-          className="px-5 py-2 rounded border bg-blue-500
-         text-white hover:bg-blue-600 cursor-pointer w-full"
-          onClick={() => formik.handleSubmit()}
-        >
-          Enviar!
-        </button>
+        <div className="flex flex-row">
+          <button
+            type="button"
+            className="px-5 py-2 rounded border-blue-300 bg-blue-500
+         text-white hover:bg-blue-600 cursor-pointer w-full text-center mr-2"
+            onClick={() => formik.handleSubmit()}
+          >
+            Enviar!
+          </button>
+          <Link
+            href="/"
+            className="px-5 py-2 rounded border-red-300 bg-red-500
+         text-white hover:bg-red-600 cursor-pointer w-1/2 text-center ml-2"
+          >
+            Voltar
+          </Link>
+        </div>
       </form>
     </div>
   );

@@ -17,14 +17,14 @@ export default function Home() {
   }, []);
   return (
     <>
-      <div className="flex flex-row text-sm text-white flex-grow items-stretch justify-stretch">
+      <div className="flex flex-row text-sm text-white flex-grow items-stretch ">
         <Link
           href="novaSolicitacao"
-          className="bg-red-500 hover:bg-red-600 rounded border border-red-200 px-5 py-2 my-2"
+          className="bg-red-500 hover:bg-red-600 rounded border w-full border-red-200 px-5 py-2 text-center  my-2"
         >
           Preciso de resgate!
         </Link>
-        <button className="bg-green-500 hover:bg-green-600 rounded border border-green-200 px-5 py-2 ml-3 my-2">
+        <button className="bg-green-500 hover:bg-green-600 w-full rounded border border-green-200 text-center px-5 py-2 ml-3 my-2">
           Quero ajudar!
         </button>
       </div>
