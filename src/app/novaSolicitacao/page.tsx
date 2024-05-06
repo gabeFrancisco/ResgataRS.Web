@@ -30,9 +30,6 @@ const page = () => {
       coordenadas: Yup.string().required(
         "Clique no mapa para pegar coordenadas!"
       ),
-      cep: Yup.string().required("CEP é obrigatório!"),
-      rua: Yup.string().required("Informe o nome da rua!"),
-      numero: Yup.string().required("Informe o número"),
       bairro: Yup.string().required("Bairro é obrigatório!"),
       cidade: Yup.string().required("Cidade é obrigatório"),
       pessoas: Yup.number().min(1).required("Informe o número de pessoas!"),
@@ -91,10 +88,13 @@ const page = () => {
           />
           <label htmlFor="cpf_rg">CPF/RG*</label>
           <input
-            className="border rounded mx-3 w-2/3 lg:w-full"
+            className={`border rounded mx-3 w-2/3 lg:w-full ${
+              formik.errors.cpf_rg && "border-red-500"
+            }`}
             type="text"
             name="cpf_rg"
             id="cpf_rg"
+            maxLength={11}
             value={formik.values.cpf_rg}
             onChange={formik.handleChange}
           />
@@ -114,13 +114,15 @@ const page = () => {
         <div className="my-3 flex flex-row items-center">
           <label htmlFor="coordenadas">Coordenadas*</label>
           <input
-            className="border rounded mx-3 w-2/3 lg:w-full"
+            className={`border rounded mx-3 w-2/3 lg:w-full ${
+              formik.errors.coordenadas && "border-red-500"
+            }`}
             type="text"
             name="coordenadas"
             id="coordenadas"
             value={formik.values.coordenadas}
             onChange={formik.handleChange}
-            // readOnly
+            readOnly
           />
           <button
             type="button"
@@ -129,7 +131,7 @@ const page = () => {
             Carregar!
           </button>
         </div>
-        <small>
+        <small className="text-green-700">
           Clique em um ponto do mapa para marcar sua localização ou use o GPS do
           seu celular e clique no botão ao lado para localizar automaticamente
         </small>
@@ -182,18 +184,22 @@ const page = () => {
           />
         </div>
         <div className="my-3 flex flex-row items-center">
-          <label htmlFor="bairro">Bairro</label>
+          <label htmlFor="bairro">Bairro*</label>
           <input
-            className="border rounded mx-3 w-2/3 lg:w-full"
+            className={`border rounded mx-3 w-2/3 lg:w-full ${
+              formik.errors.bairro && "border-red-500"
+            }`}
             type="text"
             name="bairro"
             id="bairro"
             value={formik.values.bairro}
             onChange={formik.handleChange}
           />
-          <label htmlFor="cidade">Cidade</label>
+          <label htmlFor="cidade">Cidade*</label>
           <input
-            className="border rounded mx-3 w-2/3 lg:w-full"
+            className={`border rounded mx-3 w-2/3 lg:w-full ${
+              formik.errors.cidade && "border-red-500"
+            }`}
             type="text"
             name="cidade"
             id="cidade"
@@ -204,9 +210,11 @@ const page = () => {
         <hr />
         <div className="my-3 items-center">
           <div className="flex flex-row items-center">
-            <label htmlFor="pessoas">Nº pessoas</label>
+            <label htmlFor="pessoas">Nº pessoas*</label>
             <input
-              className="border rounded mx-3 lg:w-full"
+              className={`border rounded mx-3 lg:w-full ${
+                formik.errors.pessoas && "border-red-500"
+              }`}
               type="number"
               name="pessoas"
               id="pessoas"
@@ -218,9 +226,11 @@ const page = () => {
         </div>
         <div className="my-3 items-center">
           <div className="flex flex-row items-center">
-            <label htmlFor="situacao">Situação</label>
+            <label htmlFor="situacao">Situação*</label>
             <input
-              className="border rounded mx-3 lg:w-full"
+              className={`border rounded mx-3 lg:w-full ${
+                formik.errors.situacao && "border-red-500"
+              }`}
               type="text"
               name="situacao"
               id="situacao"
