@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Marker, Popup } from "react-leaflet";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { TileLayer } from "react-leaflet/TileLayer";
@@ -18,14 +18,14 @@ const Mapa = () => {
     });
   }, []);
   return (
-    <>
+    <Suspense>
       {solicitacoes && typeof window !== "undefined" ? (
         <MapContainer
           center={[-29.999834, -51.104045]}
           zoom={11}
           scrollWheelZoom={false}
-          style={{ height: "90vh", width: "100%", padding: "" }}
-          className="border shadow rounded h-full"
+          style={{ width: "100%" }}
+          className="border shadow rounded w-10/12 min-h-96 lg:h-screen flex-1"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -45,7 +45,7 @@ const Mapa = () => {
           ))}
         </MapContainer>
       ) : null}
-    </>
+    </Suspense>
   );
 };
 

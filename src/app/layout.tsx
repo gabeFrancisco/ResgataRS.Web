@@ -27,11 +27,13 @@ export default function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body className={inter.className}>
+      <body className="bg-white overflow-x-hidden">
         <Header />
-        <main className="flex flex-col lg:flex-row min-h-screen justify-between p-3">
-          <Mapa />
-          <div className="p-3 my-2 mx-0 lg:mx-3 lg:my-0 border rounded h-full w-full lg:w-1/2 text-gray-800 shadow">
+        <main className="flex flex-col items-center w-screen lg:flex-row lg:items-stretch justify-between p-3">
+          <div className="w-11/12 lg:w-screen">
+            <Mapa />
+          </div>
+          <div className="p-3 my-2 mx-0 lg:mx-3 lg:my-0 border rounded h-full w-11/12 lg:w-1/2 text-gray-800 shadow">
             {children}
           </div>
         </main>
