@@ -19,7 +19,7 @@ const Mapa = () => {
   }, []);
   return (
     <>
-      {solicitacoes.length > 0 && typeof window !== "undefined" ? (
+      {solicitacoes && typeof window !== "undefined" ? (
         <MapContainer
           center={[-29.999834, -51.104045]}
           zoom={11}
