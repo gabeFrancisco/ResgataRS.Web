@@ -1,7 +1,13 @@
 "use client";
 
 import { Suspense, useContext, useEffect, useRef, useState } from "react";
-import { Marker, Popup, useMapEvents } from "react-leaflet";
+import {
+  Circle,
+  CircleMarker,
+  Marker,
+  Popup,
+  useMapEvents,
+} from "react-leaflet";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { TileLayer } from "react-leaflet/TileLayer";
 import { Solicitacao } from "@/models/Solicitacao";
@@ -37,7 +43,7 @@ const Mapa = () => {
           ref={mapRef}
           center={[-29.999834, -51.104045]}
           zoom={11}
-          scrollWheelZoom={false}
+          scrollWheelZoom={true}
           style={{ width: "100%" }}
           className="border shadow rounded w-10/12 min-h-96 lg:h-screen flex-1"
         >
@@ -45,6 +51,13 @@ const Mapa = () => {
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <CircleMarker
+            center={mapState.coordenadas as LatLngExpression}
+            radius={20}
+            weight={1}
+            fillColor="#d92"
+            color="#e33"
           />
           {solicitacoes.map((el, key) => (
             <Marker

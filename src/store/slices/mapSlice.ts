@@ -5,7 +5,7 @@ interface MapSliceState {
 }
 
 const initialState: MapSliceState = {
-  coordenadas: [-30.032554, -51.227918],
+  coordenadas: [0, 0],
 };
 
 export const MapSlice = createSlice({
