@@ -8,6 +8,7 @@ import { Solicitacao } from "@/models/Solicitacao";
 import { LatLngExpression } from "leaflet";
 import api from "../../api";
 import LocationMarker from "./LocationMarker";
+import { red } from "@/utils/MarkerIcons";
 
 const Mapa = () => {
   const [solicitacoes, setSolicitacoes] = useState<Solicitacao[]>([]);
@@ -36,6 +37,7 @@ const Mapa = () => {
           {solicitacoes.map((el, key) => (
             <Marker
               key={key}
+              icon={red}
               position={
                 el.endereco.coordernadas
                   .split(",")

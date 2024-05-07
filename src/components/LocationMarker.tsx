@@ -1,5 +1,6 @@
 "use client";
 
+import { blue } from "@/utils/MarkerIcons";
 import L, { LatLng, LatLngExpression } from "leaflet";
 import React, { Suspense, useEffect, useState } from "react";
 import { Marker, Popup, useMap } from "react-leaflet";
@@ -20,7 +21,7 @@ const LocationMarker = () => {
   return position === undefined ? null : (
     <Suspense>
       {typeof window !== "undefined" ? (
-        <Marker position={position}>
+        <Marker position={position} icon={blue}>
           <Popup>Você está aqui!</Popup>
         </Marker>
       ) : null}
