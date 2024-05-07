@@ -1,16 +1,21 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
-import { Marker, Popup } from "react-leaflet";
+import { Suspense, useContext, useEffect, useRef, useState } from "react";
+import { Marker, Popup, useMapEvents } from "react-leaflet";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { TileLayer } from "react-leaflet/TileLayer";
 import { Solicitacao } from "@/models/Solicitacao";
-import { LatLngExpression } from "leaflet";
+import L, { ControlPosition, LatLngExpression, map } from "leaflet";
 import api from "../../api";
 import LocationMarker from "./LocationMarker";
 import { red } from "@/utils/MarkerIcons";
+import { useAppSelector } from "@/store/store";
+
 const Mapa = () => {
   const [solicitacoes, setSolicitacoes] = useState<Solicitacao[]>([]);
+  const mapRef = useRef<L.Map>(null);
+  const mapState = useAppSelector((state) => state.map);
+
   useEffect(() => {
     api.get("/solicitacoes").then((res) => {
       if (res.status === 200) {
@@ -19,10 +24,17 @@ const Mapa = () => {
     });
   }, []);
 
+  useEffect(() => {
+    console.log(mapState.coordenadas);
+    mapRef.current &&
+      mapRef.current!.flyTo(mapState.coordenadas as LatLngExpression, 16);
+  }, [mapState]);
+
   return (
     <Suspense>
       {solicitacoes && typeof window !== "undefined" ? (
         <MapContainer
+          ref={mapRef}
           center={[-29.999834, -51.104045]}
           zoom={11}
           scrollWheelZoom={false}
