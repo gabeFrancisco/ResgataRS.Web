@@ -1,13 +1,38 @@
 "use client";
 
-import L, { LatLng, LatLngExpression } from "leaflet";
-import React, { Suspense, useEffect, useState } from "react";
+import L, { LatLng, LatLngExpression, Marker as MarkerType } from "leaflet";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Marker, Popup, useMap } from "react-leaflet";
 import Blue from "../../public/images/blue.png";
 import { blue } from "@/utils/MarkerIcons";
 
 const LocationMarker = () => {
   const [position, setPosition] = useState<LatLngExpression>();
+  const [draggable, setDraggable] = useState(false);
+  const markerRef = useRef<MarkerType>(null);
+  const eventHandlers = useMemo(
+    () => ({
+      dragend() {
+        const marker = markerRef.current;
+        if (marker != null) {
+          setPosition(marker.getLatLng());
+        }
+      },
+    }),
+    []
+  );
+
+  const toggleDraggable = useCallback(() => {
+    setDraggable((d) => !d);
+  }, []);
+
   const map = useMap();
 
   useEffect(() => {
@@ -22,9 +47,16 @@ const LocationMarker = () => {
   return position === undefined ? null : (
     <Suspense>
       {typeof window !== "undefined" ? (
-        <Marker position={position} icon={blue}>
-          <Popup>Você está aqui!</Popup>
-        </Marker>
+        <div onClick={toggleDraggable}>
+          <Marker
+            position={position}
+            icon={blue}
+            draggable={draggable}
+            eventHandlers={eventHandlers}
+          >
+            <Popup>Você está aqui!</Popup>
+          </Marker>
+        </div>
       ) : null}
     </Suspense>
   );

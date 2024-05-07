@@ -38,17 +38,19 @@ const Mapa = () => {
   }, [mapState.coordenadas]);
 
   useEffect(() => {
-    mapRef.current?.locate().on("locationfound", (e) => {
-      dispatch(setCoordenadaSelecionada([e.latlng.lat, e.latlng.lng]));
-    });
-    dispatch(setSelecao(false));
-    mapRef.current?.locate().on("locationerror", () => {
-      alert(
-        "GPS não conectado! Ative sua localização, tente novamente, ou selecionado o local no mapa!"
-      );
-      dispatch(setSelecao(false));
-    });
-  }, [mapState.selecao === true]);
+    mapRef.current
+      ?.locate()
+      .on("locationfound", (e) => {
+        dispatch(setCoordenadaSelecionada([e.latlng.lat, e.latlng.lng]));
+        dispatch(setSelecao(false));
+      })
+      .on("locationerror", () => {
+        alert(
+          "GPS não conectado! Ative sua localização, tente novamente, ou selecionado o local no mapa!"
+        );
+        dispatch(setSelecao(false));
+      });
+  }, [mapState.selecao == true]);
 
   return (
     <Suspense>
