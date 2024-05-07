@@ -9,7 +9,6 @@ import { LatLngExpression } from "leaflet";
 import api from "../../api";
 import LocationMarker from "./LocationMarker";
 import { red } from "@/utils/MarkerIcons";
-
 const Mapa = () => {
   const [solicitacoes, setSolicitacoes] = useState<Solicitacao[]>([]);
   useEffect(() => {
@@ -19,6 +18,7 @@ const Mapa = () => {
       }
     });
   }, []);
+
   return (
     <Suspense>
       {solicitacoes && typeof window !== "undefined" ? (

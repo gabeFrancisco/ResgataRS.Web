@@ -1,9 +1,10 @@
 "use client";
 
-import { blue } from "@/utils/MarkerIcons";
 import L, { LatLng, LatLngExpression } from "leaflet";
 import React, { Suspense, useEffect, useState } from "react";
 import { Marker, Popup, useMap } from "react-leaflet";
+import Blue from "../../public/images/blue.png";
+import { blue } from "@/utils/MarkerIcons";
 
 const LocationMarker = () => {
   const [position, setPosition] = useState<LatLngExpression>();

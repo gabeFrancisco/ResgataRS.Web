@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
-import Mapa from "@/components/Mapa";
+import dynamic from "next/dynamic";
+const Mapa = dynamic(() => import("../components/Mapa"), { ssr: false });
 
 const inter = Inter({ subsets: ["latin"] });
 

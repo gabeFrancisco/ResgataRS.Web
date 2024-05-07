@@ -1,8 +1,9 @@
-import L, { Icon, PointExpression } from "leaflet";
+"use client";
 
-import Red from "../../public/images/red.png";
-import Green from "../../public/images/green.png";
-import Blue from "../../public/images/blue.png";
+import Red from "../../public/assets/red.png";
+import Green from "../../public/assets/green.png";
+import Blue from "../../public/assets/blue.png";
+import L from "leaflet";
 
 export const red = L.icon({
   iconUrl: Red.src,
