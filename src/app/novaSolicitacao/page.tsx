@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormik, validateYupSchema } from "formik";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import api from "../../../api";
 import { Solicitacao } from "@/models/Solicitacao";
@@ -12,6 +12,10 @@ import { setSelecao } from "@/store/slices/mapSlice";
 const page = () => {
   const dispatch = useAppDispatch();
   const mapState = useAppSelector((state) => state.map);
+  const [documento, setDocumento] = useState(false);
+  const handleDocumentoCheckbox = () => {
+    documento ? setDocumento(false) : setDocumento(true);
+  };
 
   const handleCoordinates = () => {
     dispatch(setSelecao(true));
@@ -43,7 +47,7 @@ const page = () => {
     },
     validationSchema: Yup.object({
       nome: Yup.string().required("Nome é obrigatório!"),
-      cpf_rg: Yup.string().required("CPF ou RG são obrigatórios!"),
+      cpf_rg: Yup.string().min(11, "CPF ou RG são obrigatórios!"),
       coordenadas: Yup.string().required(
         "Clique no mapa para pegar coordenadas!"
       ),
@@ -63,7 +67,7 @@ const page = () => {
         solicitante: {
           nome: values.nome,
           telefone: values.telefone,
-          cpf_rg: values.cpf_rg,
+          cpf_rg: documento ? values.cpf_rg : "",
         },
         endereco: {
           rua: values.rua,
@@ -103,6 +107,9 @@ const page = () => {
             value={formik.values.nome}
             onChange={formik.handleChange}
           />
+        </div>
+        {/* <div className="my-3 flex flex-row items-center"></div> */}
+        <div className="flex flex-row items-center justify-end">
           <label htmlFor="cpf_rg">CPF/RG*</label>
           <input
             className={`border rounded mx-3 w-2/3 lg:w-full ${
@@ -114,8 +121,20 @@ const page = () => {
             maxLength={11}
             value={formik.values.cpf_rg}
             onChange={formik.handleChange}
+            disabled={documento ? true : false}
           />
+          <input
+            checked={documento}
+            onChange={handleDocumentoCheckbox}
+            type="checkbox"
+            className="mr-2"
+          />
+          <small className="w-full">Não incluir documento</small>
         </div>
+        <small>
+          A inclusão do documento garante uma solicitação mais segura contra
+          fraldes.
+        </small>
         <div className="my-3 flex flex-row items-center">
           <label htmlFor="telefone">Telefone</label>
           <input

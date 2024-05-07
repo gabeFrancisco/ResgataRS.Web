@@ -16,7 +16,7 @@ import api from "../../api";
 import LocationMarker from "./LocationMarker";
 import { red } from "@/utils/MarkerIcons";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { setCoordenadaSelecionada } from "@/store/slices/mapSlice";
+import { setCoordenadaSelecionada, setSelecao } from "@/store/slices/mapSlice";
 
 const Mapa = () => {
   const [solicitacoes, setSolicitacoes] = useState<Solicitacao[]>([]);
@@ -41,14 +41,14 @@ const Mapa = () => {
     mapRef.current?.locate().on("locationfound", (e) => {
       dispatch(setCoordenadaSelecionada([e.latlng.lat, e.latlng.lng]));
     });
-    mapRef.current
-      ?.locate()
-      .on("locationerror", () =>
-        alert(
-          "GPS não conectado! Ative sua localização, tente novamente, ou selecionado o local no mapa!"
-        )
+    dispatch(setSelecao(false));
+    mapRef.current?.locate().on("locationerror", () => {
+      alert(
+        "GPS não conectado! Ative sua localização, tente novamente, ou selecionado o local no mapa!"
       );
-  }, [mapState.selecao]);
+      dispatch(setSelecao(false));
+    });
+  }, [mapState.selecao === true]);
 
   return (
     <Suspense>
