@@ -18,7 +18,11 @@ const page = () => {
   };
 
   useEffect(() => {
-    formik.setFieldValue("coordenadas", mapState.coordenadaSelecionada);
+    formik.setFieldValue(
+      "coordenadas",
+      mapState.coordenadaSelecionada?.toString(),
+      true
+    );
   }, [mapState.coordenadaSelecionada]);
 
   const formik = useFormik({
