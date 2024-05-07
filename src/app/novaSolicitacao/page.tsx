@@ -8,6 +8,7 @@ import { Solicitacao } from "@/models/Solicitacao";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { setSelecao } from "@/store/slices/mapSlice";
+import axios from "axios";
 
 const page = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +20,20 @@ const page = () => {
 
   const handleCoordinates = () => {
     dispatch(setSelecao(true));
+  };
+
+  const handleCep = () => {
+    formik.values.cep.length === 8 &&
+      axios
+        .get(`https://viacep.com.br/ws/${formik.values.cep}/json/`)
+        .then((res) => {
+          if (res.status === 200) {
+            formik.setFieldValue("rua", res.data.logradouro);
+            formik.setFieldValue("bairro", res.data.bairro);
+            formik.setFieldValue("cidade", res.data.localidade);
+          }
+          return;
+        });
   };
 
   useEffect(() => {
@@ -47,12 +62,9 @@ const page = () => {
     },
     validationSchema: Yup.object({
       nome: Yup.string().required("Nome é obrigatório!"),
-      cpf_rg: Yup.string().min(11, "CPF ou RG são obrigatórios!"),
       coordenadas: Yup.string().required(
         "Clique no mapa para pegar coordenadas!"
       ),
-      bairro: Yup.string().required("Bairro é obrigatório!"),
-      cidade: Yup.string().required("Cidade é obrigatório"),
       pessoas: Yup.number().min(1).required("Informe o número de pessoas!"),
       situacao: Yup.string().required("Situação obrigatória!"),
     }),
@@ -110,7 +122,7 @@ const page = () => {
         </div>
         {/* <div className="my-3 flex flex-row items-center"></div> */}
         <div className="flex flex-row items-center justify-end">
-          <label htmlFor="cpf_rg">CPF/RG*</label>
+          <label htmlFor="cpf_rg">CPF/RG</label>
           <input
             className={`border rounded mx-3 w-2/3 lg:w-full ${
               formik.errors.cpf_rg && "border-red-500"
@@ -181,9 +193,18 @@ const page = () => {
               type="text"
               name="cep"
               id="cep"
+              maxLength={8}
               value={formik.values.cep}
+              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
               onChange={formik.handleChange}
             />
+            <button
+              type="button"
+              className="bg-blue-500 rounded border py-1 px-2 text-white"
+              onClick={handleCep}
+            >
+              Pesquisar{" "}
+            </button>
           </div>
           <small>
             Insira seu CEP para preencher automáticamente todos os campos
@@ -221,7 +242,7 @@ const page = () => {
           />
         </div>
         <div className="my-3 flex flex-row items-center">
-          <label htmlFor="bairro">Bairro*</label>
+          <label htmlFor="bairro">Bairro</label>
           <input
             className={`border rounded mx-3 w-2/3 lg:w-full ${
               formik.errors.bairro && "border-red-500"
@@ -232,7 +253,7 @@ const page = () => {
             value={formik.values.bairro}
             onChange={formik.handleChange}
           />
-          <label htmlFor="cidade">Cidade*</label>
+          <label htmlFor="cidade">Cidade</label>
           <input
             className={`border rounded mx-3 w-2/3 lg:w-full ${
               formik.errors.cidade && "border-red-500"
