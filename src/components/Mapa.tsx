@@ -15,12 +15,14 @@ import L, { ControlPosition, LatLngExpression, map } from "leaflet";
 import api from "../../api";
 import LocationMarker from "./LocationMarker";
 import { red } from "@/utils/MarkerIcons";
-import { useAppSelector } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { setCoordenadaSelecionada } from "@/store/slices/mapSlice";
 
 const Mapa = () => {
   const [solicitacoes, setSolicitacoes] = useState<Solicitacao[]>([]);
   const mapRef = useRef<L.Map>(null);
   const mapState = useAppSelector((state) => state.map);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     api.get("/solicitacoes").then((res) => {
@@ -31,10 +33,22 @@ const Mapa = () => {
   }, []);
 
   useEffect(() => {
-    console.log(mapState.coordenadas);
     mapRef.current &&
       mapRef.current!.flyTo(mapState.coordenadas as LatLngExpression, 16);
-  }, [mapState]);
+  }, [mapState.coordenadas]);
+
+  useEffect(() => {
+    mapRef.current?.locate().on("locationfound", (e) => {
+      dispatch(setCoordenadaSelecionada([e.latlng.lat, e.latlng.lng]));
+    });
+    mapRef.current
+      ?.locate()
+      .on("locationerror", () =>
+        alert(
+          "GPS não conectado! Ative sua localização, tente novamente, ou selecionado o local no mapa!"
+        )
+      );
+  }, [mapState.selecao]);
 
   return (
     <Suspense>

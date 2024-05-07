@@ -1,13 +1,26 @@
 "use client";
 
 import { useFormik, validateYupSchema } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import * as Yup from "yup";
 import api from "../../../api";
 import { Solicitacao } from "@/models/Solicitacao";
 import Link from "next/link";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { setSelecao } from "@/store/slices/mapSlice";
 
 const page = () => {
+  const dispatch = useAppDispatch();
+  const mapState = useAppSelector((state) => state.map);
+
+  const handleCoordinates = () => {
+    dispatch(setSelecao(true));
+  };
+
+  useEffect(() => {
+    formik.setFieldValue("coordenadas", mapState.coordenadaSelecionada);
+  }, [mapState.coordenadaSelecionada]);
+
   const formik = useFormik({
     initialValues: {
       nome: "",
@@ -126,6 +139,7 @@ const page = () => {
           />
           <button
             type="button"
+            onClick={handleCoordinates}
             className="bg-green-500 rounded border-green-300 px-2 py-1 text-sm text-white hover:bg-green-600"
           >
             Carregar!
