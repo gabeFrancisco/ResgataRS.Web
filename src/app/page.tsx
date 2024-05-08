@@ -25,9 +25,9 @@ export default function Home() {
         >
           Preciso de resgate!
         </Link>
-        <button className="bg-green-500 hover:bg-green-600 w-full rounded border border-green-200 text-center px-5 py-2 ml-3 my-2">
+        {/* <button className="bg-green-500 hover:bg-green-600 w-full rounded border border-green-200 text-center px-5 py-2 ml-3 my-2">
           Quero ajudar!
-        </button>
+        </button> */}
       </div>
       <div>
         <h3>

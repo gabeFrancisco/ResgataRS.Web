@@ -11,19 +11,33 @@ import { setSelecao } from "@/store/slices/mapSlice";
 import axios from "axios";
 import { postSolicitacao } from "@/store/slices/solicitacaoSlice";
 import { useRouter } from "next/navigation";
+import Modal from "@/components/Modal";
+import { flightRouterStateSchema } from "next/dist/server/app-render/types";
 
 const page = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const mapState = useAppSelector((state) => state.map);
-  const [documento, setDocumento] = useState(false);
-  const handleDocumentoCheckbox = () => {
-    documento ? setDocumento(false) : setDocumento(true);
-  };
   const [enviado, setEnviado] = useState(true);
 
   const handleCoordinates = () => {
     dispatch(setSelecao(true));
+  };
+
+  const [modal, setModal] = useState(false);
+  const [submit, setSubmit] = useState(false);
+  const toggleModal = () => {
+    if (modal) {
+      setModal(false);
+      setEnviado(true);
+      setSubmit(false);
+    } else {
+      setModal(true);
+    }
+  };
+
+  const handleSubmit = () => {
+    formik.handleSubmit();
   };
 
   const handleCep = () => {
@@ -77,36 +91,59 @@ const page = () => {
     enableReinitialize: true,
     onSubmit: (values) => {
       setEnviado(false);
-      let solicitacao: Solicitacao = {
-        situacao: values.situacao,
-        mensagem: values.mensagem,
-        numeroPessoas: values.pessoas,
-        solicitante: {
-          nome: values.nome,
-          telefone: values.telefone,
-          cpf_rg: documento ? values.cpf_rg : "",
-        },
-        endereco: {
-          rua: values.rua,
-          numero: values.numero,
-          complemento: values.complemento,
-          cep: values.cep,
-          bairro: values.bairro,
-          cidade: values.cidade,
-          coordernadas: values.coordenadas,
-        },
-      };
-
-      dispatch(postSolicitacao(solicitacao))
-        .then(() => {
+      setModal(true);
+      setSubmit(true);
+      if (submit) {
+        let solicitacao: Solicitacao = {
+          situacao: values.situacao,
+          mensagem: values.mensagem,
+          numeroPessoas: values.pessoas,
+          solicitante: {
+            nome: values.nome,
+            telefone: values.telefone,
+            cpf_rg: values.cpf_rg,
+          },
+          endereco: {
+            rua: values.rua,
+            numero: values.numero,
+            complemento: values.complemento,
+            cep: values.cep,
+            bairro: values.bairro,
+            cidade: values.cidade,
+            coordernadas: values.coordenadas,
+          },
+        };
+        dispatch(postSolicitacao(solicitacao)).then(() => {
           formik.resetForm();
           router.replace("/");
-        })
-        .then(() => setEnviado(true));
+          setEnviado(true);
+          setSubmit(false);
+          setModal(false);
+        });
+      }
+      return;
     },
   });
   return (
     <div className="text-sm h-full">
+      {modal && (
+        <Modal
+          title="Confirmação de solicitação"
+          toggleModal={toggleModal}
+          toggleAction={handleSubmit}
+        >
+          <p>
+            Clicando em "Confirmar", você concorda que se encontra em situação
+            de risco, independente do grau e que precisa urgentemente de ajuda.
+          </p>
+          <p>
+            Por favor, colabore !Não abra uma solicitação desnecessária/falsa a
+            fim de prejudicar as equipes de resgate e voluntários nesse momento
+            tão complicado!
+          </p>
+        </Modal>
+      )}
+
       <h3>Nova solicitação:</h3>
       <hr />
       <form method="post">
@@ -139,15 +176,7 @@ const page = () => {
             maxLength={11}
             value={formik.values.cpf_rg}
             onChange={formik.handleChange}
-            disabled={documento ? true : false}
           />
-          <input
-            checked={documento}
-            onChange={handleDocumentoCheckbox}
-            type="checkbox"
-            className="mr-2"
-          />
-          <small className="w-full">Não incluir documento</small>
         </div>
         <small>
           A inclusão do documento garante uma solicitação mais segura contra

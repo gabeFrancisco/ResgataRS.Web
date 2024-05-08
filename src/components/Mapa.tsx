@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { CircleMarker, Marker, Popup, useMapEvents } from "react-leaflet";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { TileLayer } from "react-leaflet/TileLayer";
@@ -66,12 +66,13 @@ const Mapa = () => {
             zoom={11}
             scrollWheelZoom={true}
             style={{ width: "100%" }}
-            className="border shadow rounded w-10/12 min-h-96 lg:h-screen flex-1 "
+            className="border shadow rounded w-10/12 min-h-96 lg:h-screen flex-1 z-0"
           >
             <LocationMarker />
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              className="z-0"
             />
             <CircleMarker
               center={mapState.coordenadas as LatLngExpression}
