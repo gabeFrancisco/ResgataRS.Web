@@ -3,12 +3,14 @@
 import { Solicitacao } from "@/models/Solicitacao";
 import { setCoordenadas } from "@/store/slices/mapSlice";
 import { useAppDispatch } from "@/store/store";
-import React, { useCallback, useContext } from "react";
+import React from "react";
 
 import { format } from "date-fns";
 
 const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
   const dispatch = useAppDispatch();
+  const date = new Date(props.createdAt!).toISOString();
+
   return (
     <div
       onClick={() => {
@@ -21,10 +23,10 @@ const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
       <div className="flex flex-row justify-between items-baseline">
         <h4>{props.situacao}</h4>
         <p>
-          {format(
-            new Date(props.createdAt!).toLocaleDateString("pt-BR"),
-            "dd/MM/yyyy hh:MM"
-          ).toLocaleLowerCase()}
+          {new Date(date).toLocaleString("pt-BR", {
+            dateStyle: "short",
+            timeStyle: "short",
+          })}
         </p>
       </div>
       <div className="text-gray-600">
