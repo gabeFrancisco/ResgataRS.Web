@@ -9,14 +9,18 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { setSelecao } from "@/store/slices/mapSlice";
 import axios from "axios";
+import { postSolicitacao } from "@/store/slices/solicitacaoSlice";
+import { useRouter } from "next/navigation";
 
 const page = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const mapState = useAppSelector((state) => state.map);
   const [documento, setDocumento] = useState(false);
   const handleDocumentoCheckbox = () => {
     documento ? setDocumento(false) : setDocumento(true);
   };
+  const [enviado, setEnviado] = useState(true);
 
   const handleCoordinates = () => {
     dispatch(setSelecao(true));
@@ -69,9 +73,10 @@ const page = () => {
       situacao: Yup.string().required("Situação obrigatória!"),
     }),
     validateOnChange: false,
-    validateOnBlur: true,
+    validateOnBlur: false,
     enableReinitialize: true,
     onSubmit: (values) => {
+      setEnviado(false);
       let solicitacao: Solicitacao = {
         situacao: values.situacao,
         mensagem: values.mensagem,
@@ -92,11 +97,12 @@ const page = () => {
         },
       };
 
-      console.log(solicitacao);
-      api
-        .post("/solicitacoes", solicitacao)
-        .then(() => alert("Solicitação processada com successo!"))
-        .catch((err) => alert(err));
+      dispatch(postSolicitacao(solicitacao))
+        .then(() => {
+          formik.resetForm();
+          router.replace("/");
+        })
+        .then(() => setEnviado(true));
     },
   });
   return (
@@ -312,11 +318,13 @@ const page = () => {
         <div className="flex flex-row">
           <button
             type="button"
+            disabled={!enviado ? true : false}
             className="px-5 py-2 rounded border-blue-300 bg-blue-500
-         text-white hover:bg-blue-600 cursor-pointer w-full text-center mr-2"
+            text-white hover:bg-blue-600 disabled:bg-white disabled:text-blue-500 
+              disabled:border disabled:border-blue-500 cursor-pointer w-full text-center mr-2"
             onClick={() => formik.handleSubmit()}
           >
-            Enviar!
+            {enviado ? "Enviar!" : "Carregando..."}
           </button>
           <Link
             href="/"

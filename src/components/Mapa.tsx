@@ -17,19 +17,18 @@ import LocationMarker from "./LocationMarker";
 import { red } from "@/utils/MarkerIcons";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { setCoordenadaSelecionada, setSelecao } from "@/store/slices/mapSlice";
+import { getAllSolicitacoes } from "@/store/slices/solicitacaoSlice";
 
 const Mapa = () => {
-  const [solicitacoes, setSolicitacoes] = useState<Solicitacao[]>([]);
   const mapRef = useRef<L.Map>(null);
   const mapState = useAppSelector((state) => state.map);
+  const solicitacoes = useAppSelector(
+    (state) => state.solicitacoes.solicitacaoList
+  );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    api.get("/solicitacoes").then((res) => {
-      if (res.status === 200) {
-        setSolicitacoes(res.data as Solicitacao[]);
-      }
-    });
+    dispatch(getAllSolicitacoes());
   }, []);
 
   useEffect(() => {
@@ -38,18 +37,10 @@ const Mapa = () => {
   }, [mapState.coordenadas]);
 
   useEffect(() => {
-    mapRef.current
-      ?.locate()
-      .on("locationfound", (e) => {
-        dispatch(setCoordenadaSelecionada([e.latlng.lat, e.latlng.lng]));
-        dispatch(setSelecao(false));
-      })
-      .on("locationerror", () => {
-        alert(
-          "GPS não conectado! Ative sua localização, tente novamente, ou selecionado o local no mapa!"
-        );
-        dispatch(setSelecao(false));
-      });
+    mapRef.current?.locate().on("locationfound", (e) => {
+      dispatch(setCoordenadaSelecionada([e.latlng.lat, e.latlng.lng]));
+      dispatch(setSelecao(false));
+    });
   }, [mapState.selecao == true]);
 
   return (

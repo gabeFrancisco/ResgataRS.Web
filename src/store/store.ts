@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import mapSlice, { MapSlice } from "./slices/mapSlice";
+import { MapSlice } from "./slices/mapSlice";
+import { SolicitacaoSlice } from "./slices/solicitacaoSlice";
 
 export const store = configureStore({
   reducer: {
     map: MapSlice.reducer,
+    solicitacoes: SolicitacaoSlice.reducer,
   },
   devTools: true,
 });
