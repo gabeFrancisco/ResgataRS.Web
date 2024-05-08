@@ -5,6 +5,8 @@ import { setCoordenadas } from "@/store/slices/mapSlice";
 import { useAppDispatch } from "@/store/store";
 import React, { useCallback, useContext } from "react";
 
+import { format } from "date-fns";
+
 const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
   const dispatch = useAppDispatch();
   return (
@@ -19,8 +21,10 @@ const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
       <div className="flex flex-row justify-between items-baseline">
         <h4>{props.situacao}</h4>
         <p>
-          {new Date(props.createdAt!).toLocaleDateString("pt-BR")} -{" "}
-          {new Date(props.createdAt!).toTimeString()}
+          {format(
+            new Date(props.createdAt!).toLocaleDateString("pt-BR"),
+            "dd/MM/yyyy hh:MM"
+          ).toLocaleLowerCase()}
         </p>
       </div>
       <div className="text-gray-600">

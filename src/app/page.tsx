@@ -5,19 +5,20 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import api from "../../api";
 import { Solicitacao } from "@/models/Solicitacao";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { getAllSolicitacoes } from "@/store/slices/solicitacaoSlice";
 
 export default function Home() {
-  const [solicitacoes, setSolicitacoes] = useState<Solicitacao[]>([]);
+  const solicitacoes = useAppSelector(
+    (state) => state.solicitacoes.solicitacaoList
+  );
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    api.get("/solicitacoes").then((res) => {
-      if (res.status === 200) {
-        setSolicitacoes(res.data as Solicitacao[]);
-      }
-    });
+    dispatch(getAllSolicitacoes());
   }, []);
   return (
     <>
-      <div className="flex flex-row text-sm text-white flex-grow items-stretch ">
+      <div className="flex flex-row text-sm text-white flex-grow items-stretch">
         <Link
           href="novaSolicitacao"
           className="bg-red-500 hover:bg-red-600 rounded border w-full border-red-200 px-5 py-2 text-center  my-2"
@@ -34,9 +35,11 @@ export default function Home() {
         </h3>
       </div>
       <hr />
-      {solicitacoes.map((el, key) => (
-        <SolicitacaoCard props={el} key={key} />
-      ))}
+      <div className="overflow-y-scroll lg:h-screen px-2">
+        {solicitacoes
+          .map((el, key) => <SolicitacaoCard props={el} key={key} />)
+          .reverse()}
+      </div>
     </>
   );
 }
