@@ -9,7 +9,7 @@ interface MapSliceState {
 }
 
 const initialState: MapSliceState = {
-  coordenadas: [0, 0],
+  coordenadas: [-30.032003, -51.227988],
   coordenadaSelecionada: null,
   coordenadasClick: [0, 0],
   selecao: false,

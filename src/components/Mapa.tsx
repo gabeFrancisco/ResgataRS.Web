@@ -1,24 +1,16 @@
 "use client";
 
-import { Suspense, useContext, useEffect, useRef, useState } from "react";
-import {
-  Circle,
-  CircleMarker,
-  Marker,
-  Popup,
-  useMapEvents,
-} from "react-leaflet";
+import { Suspense, useEffect, useRef } from "react";
+import { CircleMarker, Marker, Popup, useMapEvents } from "react-leaflet";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { TileLayer } from "react-leaflet/TileLayer";
-import { Solicitacao } from "@/models/Solicitacao";
-import L, { ControlPosition, LatLngExpression, Map, map } from "leaflet";
-import api from "../../api";
+import L, { LatLngExpression } from "leaflet";
 import LocationMarker from "./LocationMarker";
 import { red } from "@/utils/MarkerIcons";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import {
   setCoordenadaSelecionada,
-  setCoordenadasClick,
+  setCoordenadas,
   setSelecao,
 } from "@/store/slices/mapSlice";
 import { getAllSolicitacoes } from "@/store/slices/solicitacaoSlice";
@@ -32,18 +24,30 @@ const Mapa = () => {
     (state) => state.solicitacoes.solicitacaoList
   );
 
+  const handlePosition = () => {
+    mapRef.current?.locate().on("locationfound", (e) => {
+      dispatch(setCoordenadas([e.latlng.lat, e.latlng.lng]));
+      dispatch(setSelecao(false));
+    });
+  };
+
+  const handleUpdate = () => {
+    dispatch(getAllSolicitacoes());
+  };
+
   useEffect(() => {
     dispatch(getAllSolicitacoes());
   }, []);
 
   useEffect(() => {
     mapRef.current &&
-      mapRef.current!.flyTo(mapState.coordenadas as LatLngExpression, 14);
+      mapRef.current!.flyTo(mapState.coordenadas as LatLngExpression, 16);
   }, [mapState.coordenadas]);
 
   useEffect(() => {
     mapRef.current?.locate().on("locationfound", (e) => {
       dispatch(setCoordenadaSelecionada([e.latlng.lat, e.latlng.lng]));
+      dispatch(setCoordenadas([e.latlng.lat, e.latlng.lng]));
       dispatch(setSelecao(false));
     });
   }, [mapState.selecao == true]);
@@ -55,40 +59,58 @@ const Mapa = () => {
   return (
     <Suspense>
       {solicitacoes && typeof window !== "undefined" ? (
-        <MapContainer
-          ref={mapRef}
-          center={[-29.999834, -51.104045]}
-          zoom={11}
-          scrollWheelZoom={true}
-          style={{ width: "100%" }}
-          className="border shadow rounded w-10/12 min-h-96 lg:h-screen flex-1"
-        >
-          <LocationMarker />
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <CircleMarker
-            center={mapState.coordenadas as LatLngExpression}
-            radius={20}
-            weight={1}
-            fillColor="#d92"
-            color="#e33"
-          />
-          {solicitacoes.map((el, key) => (
-            <Marker
-              key={key}
-              icon={red}
-              position={
-                el.endereco.coordernadas
-                  .split(",")
-                  .map((item) => parseFloat(item)) as LatLngExpression
-              }
-            >
-              <Popup>Número de pessoas: {el.numeroPessoas}</Popup>
-            </Marker>
-          ))}
-        </MapContainer>
+        <>
+          <MapContainer
+            ref={mapRef}
+            center={[-29.999834, -51.104045]}
+            zoom={11}
+            scrollWheelZoom={true}
+            style={{ width: "100%" }}
+            className="border shadow rounded w-10/12 min-h-96 lg:h-screen flex-1 "
+          >
+            <LocationMarker />
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <CircleMarker
+              center={mapState.coordenadas as LatLngExpression}
+              radius={20}
+              weight={1}
+              fillColor="#d92"
+              color="#e33"
+            />
+            <div className="map-buttons">
+              <button
+                type="submit"
+                onClick={handlePosition}
+                className="bg-blue-100 shadow text-gray-700 px-1 py-0.5 rounded border hover:bg-blue-200 border-gray-300 mr-2"
+              >
+                Localização atual
+              </button>
+              <button
+                type="submit"
+                onClick={handleUpdate}
+                className="bg-green-100 shadow text-gray-700 px-1 py-0.5 rounded border hover:bg-green-200 border-gray-300 "
+              >
+                Atualizar
+              </button>
+            </div>
+            {solicitacoes.map((el, key) => (
+              <Marker
+                key={key}
+                icon={red}
+                position={
+                  el.endereco.coordernadas
+                    .split(",")
+                    .map((item) => parseFloat(item)) as LatLngExpression
+                }
+              >
+                <Popup>Número de pessoas: {el.numeroPessoas}</Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </>
       ) : null}
     </Suspense>
   );
