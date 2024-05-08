@@ -9,36 +9,28 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Marker, Popup, useMap } from "react-leaflet";
+import { Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import Blue from "../../public/images/blue.png";
 import { blue } from "@/utils/MarkerIcons";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { setSinalGPS } from "@/store/slices/mapSlice";
+import {
+  setCoordenadaSelecionada,
+  setCoordenadasClick,
+  setSinalGPS,
+} from "@/store/slices/mapSlice";
 
 const LocationMarker = () => {
   const [position, setPosition] = useState<LatLngExpression>();
-  const [draggable, setDraggable] = useState(false);
-  const markerRef = useRef<MarkerType>(null);
   const dispatch = useAppDispatch();
   const mapState = useAppSelector((state) => state.map);
-
-  const eventHandlers = useMemo(
-    () => ({
-      dragend() {
-        const marker = markerRef.current;
-        if (marker != null) {
-          setPosition(marker.getLatLng());
-        }
-      },
-    }),
-    []
-  );
-
-  const toggleDraggable = useCallback(() => {
-    setDraggable((d) => !d);
-  }, []);
-
-  const map = useMap();
+  const map = useMapEvents({
+    click: (e) => {
+      if (!mapState.sinalGPS) {
+        dispatch(setCoordenadaSelecionada([e.latlng.lat, e.latlng.lng]));
+        setPosition(e.latlng as LatLngExpression);
+      }
+    },
+  });
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -48,26 +40,20 @@ const LocationMarker = () => {
           setPosition(e.latlng as LatLngExpression);
           map.flyTo(e.latlng, map.getZoom());
           dispatch(setSinalGPS(true));
+          // dispatch(setCoordenadasClick([e.latlng.lat, e.latlng.lng]));
         })
         .on("locationerror", (e) => {
           dispatch(setSinalGPS(false));
         });
     }
-  }, [mapState]);
+  }, [mapState.sinalGPS]);
 
   return position === undefined ? null : (
     <Suspense>
       {typeof window !== "undefined" ? (
-        <div onClick={toggleDraggable}>
-          <Marker
-            position={position}
-            icon={blue}
-            draggable={draggable}
-            eventHandlers={eventHandlers}
-          >
-            <Popup>Você está aqui!</Popup>
-          </Marker>
-        </div>
+        <Marker position={position} icon={blue}>
+          <Popup>Você está aqui!</Popup>
+        </Marker>
       ) : null}
     </Suspense>
   );

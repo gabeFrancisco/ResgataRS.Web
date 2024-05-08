@@ -16,11 +16,15 @@ import api from "../../api";
 import LocationMarker from "./LocationMarker";
 import { red } from "@/utils/MarkerIcons";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { setCoordenadaSelecionada, setSelecao } from "@/store/slices/mapSlice";
+import {
+  setCoordenadaSelecionada,
+  setCoordenadasClick,
+  setSelecao,
+} from "@/store/slices/mapSlice";
 import { getAllSolicitacoes } from "@/store/slices/solicitacaoSlice";
-import ClickMarker from "./ClickMarker";
 
 const Mapa = () => {
+  const layer = new L.LayerGroup();
   const dispatch = useAppDispatch();
   const mapRef = useRef<L.Map>(null);
   const mapState = useAppSelector((state) => state.map);
@@ -44,6 +48,10 @@ const Mapa = () => {
     });
   }, [mapState.selecao == true]);
 
+  useEffect(() => {
+    layer.clearLayers();
+  }, [mapState.coordenadasClick]);
+
   return (
     <Suspense>
       {solicitacoes && typeof window !== "undefined" ? (
@@ -56,7 +64,6 @@ const Mapa = () => {
           className="border shadow rounded w-10/12 min-h-96 lg:h-screen flex-1"
         >
           <LocationMarker />
-          {!mapState.sinalGPS && <ClickMarker />}
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

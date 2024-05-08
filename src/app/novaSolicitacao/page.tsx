@@ -188,8 +188,8 @@ const page = () => {
         </div>
         {!mapState.sinalGPS && (
           <p className="text-red-500 font-semibold">
-            Sem sinal de GPS! Clique no mapa e marque a sua localização
-            aproximada!
+            Sem sinal de GPS! Clique em "Carregar" novamente ou selecione no
+            mapa e marque a sua localização aproximada!
           </p>
         )}
         <small className="text-green-700">
