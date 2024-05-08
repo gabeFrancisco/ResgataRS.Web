@@ -186,6 +186,12 @@ const page = () => {
             Carregar!
           </button>
         </div>
+        {!mapState.sinalGPS && (
+          <p className="text-red-500 font-semibold">
+            Sem sinal de GPS! Clique no mapa e marque a sua localização
+            aproximada!
+          </p>
+        )}
         <small className="text-green-700">
           Clique em um ponto do mapa para marcar sua localização ou use o GPS do
           seu celular e clique no botão ao lado para localizar automaticamente

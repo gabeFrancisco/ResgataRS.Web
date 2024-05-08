@@ -12,11 +12,16 @@ import React, {
 import { Marker, Popup, useMap } from "react-leaflet";
 import Blue from "../../public/images/blue.png";
 import { blue } from "@/utils/MarkerIcons";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { setSinalGPS } from "@/store/slices/mapSlice";
 
 const LocationMarker = () => {
   const [position, setPosition] = useState<LatLngExpression>();
   const [draggable, setDraggable] = useState(false);
   const markerRef = useRef<MarkerType>(null);
+  const dispatch = useAppDispatch();
+  const mapState = useAppSelector((state) => state.map);
+
   const eventHandlers = useMemo(
     () => ({
       dragend() {
@@ -37,12 +42,18 @@ const LocationMarker = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      map.locate().on("locationfound", (e) => {
-        setPosition(e.latlng as LatLngExpression);
-        map.flyTo(e.latlng, map.getZoom());
-      });
+      map
+        .locate()
+        .on("locationfound", (e) => {
+          setPosition(e.latlng as LatLngExpression);
+          map.flyTo(e.latlng, map.getZoom());
+          dispatch(setSinalGPS(true));
+        })
+        .on("locationerror", (e) => {
+          dispatch(setSinalGPS(false));
+        });
     }
-  }, []);
+  }, [mapState]);
 
   return position === undefined ? null : (
     <Suspense>

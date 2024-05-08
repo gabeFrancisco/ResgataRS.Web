@@ -34,7 +34,7 @@ const Mapa = () => {
 
   useEffect(() => {
     mapRef.current &&
-      mapRef.current!.flyTo(mapState.coordenadas as LatLngExpression, 16);
+      mapRef.current!.flyTo(mapState.coordenadas as LatLngExpression, 14);
   }, [mapState.coordenadas]);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const Mapa = () => {
           className="border shadow rounded w-10/12 min-h-96 lg:h-screen flex-1"
         >
           <LocationMarker />
-          <ClickMarker />
+          {!mapState.sinalGPS && <ClickMarker />}
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
