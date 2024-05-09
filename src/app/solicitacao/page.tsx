@@ -31,17 +31,17 @@ const page = () => {
             Insira abaixo o código de resgate ou se você não o tiver, envia uma
             solicitação de conclusão no formulário abaixo:
           </p>
-          <div className="flex flex-row mt-3 mb-5 items-center">
-            <label htmlFor="codigo" className="text-sm">
+          <div className="flex flex-col items-start lg:flex-row mt-3 mb-5 lg:items-center">
+            <label htmlFor="codigo" className="text-sm my-1 lg:my-0 ">
               Código de resgate:{" "}
             </label>
             <input
               type="text"
               placeholder="Código"
-              className="mx-1 p-0.5 rounded border"
+              className="mx-0 lg:mx-1 p-0.5 rounded border"
               maxLength={6}
             />
-            <button className="bg-green-500 rounded text-sm px-2 py-1 text-white mx-2 hover:bg-green-600">
+            <button className="bg-green-500 rounded px-2 py-1 my-1 lg:my-0  text-white mx-0 lg:mx-2 hover:bg-green-600">
               Validar
             </button>
           </div>
@@ -53,18 +53,18 @@ const page = () => {
               name="mensagem"
               id="mensagem"
               placeholder="Insira a sua mensagem"
-              className="p-1 my-1 text-sm"
+              className="p-1 my-1 text-sm rounded border"
             ></textarea>
             <button
               type="button"
               onClick={handleModal}
-              className="bg-green-500 rounded hover:bg-green-600 shadow p-1 text-white my-2 w-1/3"
+              className="bg-green-500 rounded hover:bg-green-600 shadow p-1 text-white my-2 w-1/4"
             >
               Enviar
             </button>
           </div>
           <hr className="my-2" />
-          <div className="flex flex-row justify-between lg:justify-center p-2">
+          <div className="flex flex-row lg:justify-center">
             <button
               type="button"
               onClick={handleModal}
