@@ -1,7 +1,7 @@
 import { BaseEntity } from "./BaseEntity";
 
 export interface Endereco extends BaseEntity {
-  coordernadas: string;
+  coordenadas: string;
   rua: string;
   numero: string;
   complemento: string;

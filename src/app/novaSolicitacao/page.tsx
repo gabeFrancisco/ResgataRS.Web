@@ -110,7 +110,7 @@ const page = () => {
             cep: values.cep,
             bairro: values.bairro,
             cidade: values.cidade,
-            coordernadas: values.coordenadas,
+            coordenadas: values.coordenadas,
           },
         };
         dispatch(postSolicitacao(solicitacao)).then(() => {

@@ -22,7 +22,7 @@ const initialState: SolicitacaoState = {
       cep: "",
       cidade: "",
       complemento: "",
-      coordernadas: "",
+      coordenadas: "",
       numero: "",
       rua: "",
     },

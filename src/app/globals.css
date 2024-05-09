@@ -29,12 +29,13 @@ p {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #c8c9c8;
+  border-radius: 10px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #1baa5b;
 }
 
 .leaflet-grab {

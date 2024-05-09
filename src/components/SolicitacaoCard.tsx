@@ -3,11 +3,10 @@
 import { Solicitacao } from "@/models/Solicitacao";
 import { setCoordenadas } from "@/store/slices/mapSlice";
 import { useAppDispatch } from "@/store/store";
-import React from "react";
-
-import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const date = new Date(props.createdAt!).toISOString();
 
@@ -15,13 +14,15 @@ const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
     <div
       onClick={() => {
         dispatch(
-          setCoordenadas(props.endereco.coordernadas.split(",").map(Number))
+          setCoordenadas(props.endereco.coordenadas.split(",").map(Number))
         );
+
+        router.push("/solicitacao");
       }}
       className="flex flex-col border rounded p-2 my-2 shadow hover:bg-gray-50 cursor-pointer"
     >
       <div className="flex flex-row justify-between items-baseline">
-        <h4>{props.situacao}</h4>
+        <h2>{props.solicitante.nome}</h2>
         <p>
           {new Date(date).toLocaleString("pt-BR", {
             dateStyle: "short",
@@ -29,8 +30,9 @@ const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
           })}
         </p>
       </div>
+      <h4>{props.situacao}</h4>
       <div className="text-gray-600">
-        <p>{props.mensagem}</p>
+        {/* <p>{props.mensagem}</p> */}
         <p>
           Local: {props.endereco.cidade} - {props.endereco.bairro}
         </p>
