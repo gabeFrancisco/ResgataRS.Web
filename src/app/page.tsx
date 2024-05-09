@@ -2,35 +2,57 @@
 
 import SolicitacaoCard from "@/components/SolicitacaoCard";
 import Link from "next/link";
-import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
-import api from "../../api";
-import { Solicitacao } from "@/models/Solicitacao";
+import {
+  ChangeEvent,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { getAllSolicitacoes } from "@/store/slices/solicitacaoSlice";
-
+import {
+  getAllSolicitacoes,
+  getAllSolicitacoesByNome,
+  getAllSolicitacoesByDocumento,
+} from "@/store/slices/solicitacaoSlice";
+import { getAllCoordenadas } from "@/store/slices/mapSlice";
+import { debounce } from "lodash";
 export default function Home() {
+  const dispatch = useAppDispatch();
   const solicitacoes = useAppSelector(
     (state) => state.solicitacoes.solicitacaoList
   );
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(getAllSolicitacoes());
+    dispatch(getAllCoordenadas());
   }, []);
 
   const [search, setSearch] = useState("");
-  const handleSearch = () => {
-    let regex = /^[0-9]+$/;
-    if (search.match(regex)) {
-      alert("Numbers!");
-    } else {
-      alert("Letters!");
-    }
-  };
+
+  const setResults = useCallback(
+    debounce((val) => {
+      let regex = /^[0-9]+$/;
+      if (val.length <= 0) {
+        dispatch(getAllSolicitacoes());
+      }
+      if (val.match(regex)) {
+        dispatch(getAllSolicitacoesByDocumento(val));
+      } else {
+        dispatch(getAllSolicitacoesByNome(val));
+      }
+    }, 1000),
+    []
+  );
+
+  useEffect(() => {
+    setResults(search);
+  }, [search]);
 
   return (
     <>
       <div className="flex flex-col text-sm text-white flex-grow items-stretch">
+        <p className="text-black">{}</p>
         <Link
           href="novaSolicitacao"
           className="bg-red-500 hover:bg-red-600 rounded shadow w-full border-red-200 px-5 py-2 text-center  my-2"
@@ -54,12 +76,14 @@ export default function Home() {
           />
           <button
             type="button"
-            onClick={handleSearch}
             className="rounded px-2 text-sm bg-blue-500 ml-1 text-white hover:bg-blue-600 shadow"
           >
-            Pesquisar
+            Atualizar
           </button>
         </div>
+        <small className="text-gray-600">
+          Insira apenas letras OU números!
+        </small>
       </div>
       <div>
         <h3>

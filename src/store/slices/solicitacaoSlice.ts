@@ -1,10 +1,5 @@
 import { Solicitacao } from "@/models/Solicitacao";
-import {
-  createSlice,
-  PayloadAction,
-  createAsyncThunk,
-  createAction,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../../api";
 
 interface SolicitacaoState {
@@ -45,6 +40,26 @@ export const getAllSolicitacoes = createAsyncThunk(
     })
 );
 
+export const getAllSolicitacoesByNome = createAsyncThunk(
+  "solicitacao/getAllByName",
+  async (data: string) =>
+    await api.get(`/solicitacoes/byNome/${data}`).then((res) => {
+      if (res.status === 200) {
+        return res.data;
+      }
+    })
+);
+
+export const getAllSolicitacoesByDocumento = createAsyncThunk(
+  "solicitacao/getAllByDocumento",
+  async (data: string) =>
+    await api.get(`/solicitacoes/byDocumento/${data}`).then((res) => {
+      if (res.status === 200) {
+        return res.data;
+      }
+    })
+);
+
 export const postSolicitacao = createAsyncThunk(
   "solicitacao/post",
   async (data: Solicitacao, thunkAPI) => {
@@ -68,6 +83,15 @@ export const SolicitacaoSlice = createSlice({
     builder.addCase(getAllSolicitacoes.fulfilled, (state, action) => {
       state.solicitacaoList = action.payload;
     });
+    builder.addCase(getAllSolicitacoesByNome.fulfilled, (state, action) => {
+      state.solicitacaoList = action.payload;
+    });
+    builder.addCase(
+      getAllSolicitacoesByDocumento.fulfilled,
+      (state, action) => {
+        state.solicitacaoList = action.payload;
+      }
+    );
   },
 });
 

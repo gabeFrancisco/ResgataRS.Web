@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
-import { CircleMarker, Marker, Popup, useMapEvents } from "react-leaflet";
+import { Suspense, useEffect, useRef } from "react";
+import { CircleMarker, Marker, Popup } from "react-leaflet";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { TileLayer } from "react-leaflet/TileLayer";
 import L, { LatLngExpression } from "leaflet";
@@ -9,6 +9,7 @@ import LocationMarker from "./LocationMarker";
 import { red } from "@/utils/MarkerIcons";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import {
+  getAllCoordenadas,
   setCoordenadaSelecionada,
   setCoordenadas,
   setSelecao,
@@ -20,9 +21,7 @@ const Mapa = () => {
   const dispatch = useAppDispatch();
   const mapRef = useRef<L.Map>(null);
   const mapState = useAppSelector((state) => state.map);
-  const solicitacoes = useAppSelector(
-    (state) => state.solicitacoes.solicitacaoList
-  );
+  const coordenadas = useAppSelector((state) => state.map.coordenadasList);
 
   const handlePosition = () => {
     mapRef.current?.locate().on("locationfound", (e) => {
@@ -36,7 +35,7 @@ const Mapa = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllSolicitacoes());
+    dispatch(getAllCoordenadas()).then(() => console.log(coordenadas));
   }, []);
 
   useEffect(() => {
@@ -58,7 +57,7 @@ const Mapa = () => {
 
   return (
     <Suspense>
-      {solicitacoes && typeof window !== "undefined" ? (
+      {coordenadas && typeof window !== "undefined" ? (
         <>
           <MapContainer
             ref={mapRef}
@@ -97,19 +96,20 @@ const Mapa = () => {
                 Atualizar
               </button>
             </div>
-            {solicitacoes.map((el, key) => (
-              <Marker
-                key={key}
-                icon={red}
-                position={
-                  el.endereco.coordernadas
-                    .split(",")
-                    .map((item) => parseFloat(item)) as LatLngExpression
-                }
-              >
-                <Popup>Número de pessoas: {el.numeroPessoas}</Popup>
-              </Marker>
-            ))}
+            {coordenadas.length > 0 &&
+              coordenadas?.map((el, key) => (
+                <Marker
+                  key={key}
+                  icon={red}
+                  position={
+                    el.coordenadas
+                      .split(",")
+                      .map((item) => parseFloat(item)) as LatLngExpression
+                  }
+                >
+                  <Popup>Número de pessoas: {el.numeroPessoas}</Popup>
+                </Marker>
+              ))}
           </MapContainer>
         </>
       ) : null}

@@ -1,4 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import api from "../../../api";
+import { Coordenada } from "@/models/Coordenada";
 
 interface MapSliceState {
   coordenadas: number[];
@@ -6,6 +8,7 @@ interface MapSliceState {
   coordenadasClick: number[];
   selecao: boolean;
   sinalGPS: boolean;
+  coordenadasList: Array<Coordenada>;
 }
 
 const initialState: MapSliceState = {
@@ -14,7 +17,18 @@ const initialState: MapSliceState = {
   coordenadasClick: [0, 0],
   selecao: false,
   sinalGPS: true,
+  coordenadasList: new Array<Coordenada>(),
 };
+
+export const getAllCoordenadas = createAsyncThunk(
+  "mapa/coordenadas",
+  async () =>
+    await api.get("/solicitacoes/coordenadas").then((res) => {
+      if (res.status === 200) {
+        return res.data;
+      }
+    })
+);
 
 export const MapSlice = createSlice({
   name: "MapSlice",
@@ -35,6 +49,11 @@ export const MapSlice = createSlice({
     setSinalGPS: (state, action: PayloadAction<boolean>) => {
       state.sinalGPS = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getAllCoordenadas.fulfilled, (state, action) => {
+      state.coordenadasList = action.payload;
+    });
   },
 });
 
