@@ -35,7 +35,7 @@ const Mapa = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllCoordenadas()).then(() => console.log(coordenadas));
+    dispatch(getAllCoordenadas());
   }, []);
 
   useEffect(() => {

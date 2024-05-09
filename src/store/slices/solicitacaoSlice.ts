@@ -40,6 +40,17 @@ export const getAllSolicitacoes = createAsyncThunk(
     })
 );
 
+export const getSolicitacaoById = createAsyncThunk(
+  "solicitacao/getById",
+  async (data: number) =>
+    await api.get(`/solicitacoes/${data}`).then((res) => {
+      if (res.status === 200) {
+        console.log(res.data);
+        return res.data;
+      }
+    })
+);
+
 export const getAllSolicitacoesByNome = createAsyncThunk(
   "solicitacao/getAllByName",
   async (data: string) =>
@@ -68,7 +79,7 @@ export const postSolicitacao = createAsyncThunk(
       .then((res) => {
         if (res.status === 200) {
           thunkAPI.dispatch(getAllSolicitacoes());
-          return res.data;
+          return res.data as Solicitacao;
         }
       })
       .catch((err) => alert(err));
@@ -84,7 +95,7 @@ export const SolicitacaoSlice = createSlice({
       state.solicitacaoList = action.payload;
     });
     builder.addCase(getAllSolicitacoesByNome.fulfilled, (state, action) => {
-      state.solicitacaoList = action.payload;
+      state.solicitacaoList = action.payload!;
     });
     builder.addCase(
       getAllSolicitacoesByDocumento.fulfilled,
@@ -92,6 +103,9 @@ export const SolicitacaoSlice = createSlice({
         state.solicitacaoList = action.payload;
       }
     );
+    builder.addCase(getSolicitacaoById.fulfilled, (state, action) => {
+      state.solicitacao = action.payload;
+    });
   },
 });
 

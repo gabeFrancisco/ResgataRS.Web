@@ -2,6 +2,7 @@
 
 import { Solicitacao } from "@/models/Solicitacao";
 import { setCoordenadas } from "@/store/slices/mapSlice";
+import { getSolicitacaoById } from "@/store/slices/solicitacaoSlice";
 import { useAppDispatch } from "@/store/store";
 import { useRouter } from "next/navigation";
 
@@ -16,7 +17,7 @@ const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
         dispatch(
           setCoordenadas(props.endereco.coordenadas.split(",").map(Number))
         );
-
+        dispatch(getSolicitacaoById(parseInt(props.id!)));
         router.push("/solicitacao");
       }}
       className="flex flex-col border rounded p-2 my-2 shadow hover:bg-gray-50 cursor-pointer"
