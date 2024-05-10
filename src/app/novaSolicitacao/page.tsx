@@ -217,7 +217,7 @@ const page = () => {
           />
         </div>
         {/* <div className="my-3 flex flex-row items-center"></div> */}
-        <div className="flex flex-row items-center justify-end">
+        <div className="flex flex-row items-center">
           <label htmlFor="cpf_rg">CPF/RG</label>
           <input
             className={`border rounded mx-3 w-2/3 lg:w-full ${
