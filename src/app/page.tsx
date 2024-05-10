@@ -95,7 +95,7 @@ export default function Home() {
         </h3>
       </div>
       <hr className="shadow" />
-      <div className="overflow-y-scroll lg:h-screen mt-1 px-2">
+      <div className="overflow-y-scroll h-11/12 lg:h-screen mt-1 px-2">
         {solicitacoes
           .map((el, key) => <SolicitacaoCard props={el} key={key} />)
           .reverse()}
