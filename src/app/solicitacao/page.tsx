@@ -33,6 +33,9 @@ const page = () => {
         if (res.status == 200) {
           if ((res.data as boolean) === true) {
             setValidate(true);
+            alert("Código validado com sucesso!");
+            setModal(false);
+            router.replace("/");
           } else {
             setValidate(false);
           }
@@ -69,7 +72,7 @@ const page = () => {
             Insira abaixo o código de resgate recebido no momento da
             solicitação.
           </p>
-          <div className="flex flex-col items-start lg:flex-row mt-3 mb-5 lg:items-center">
+          <div className="flex flex-col items-start lg:flex-row mt-3 mb-3 lg:items-center">
             <label htmlFor="codigo" className="text-sm my-1 lg:my-0 ">
               Código de resgate:
             </label>
@@ -90,7 +93,7 @@ const page = () => {
             </button>
           </div>
           {!validate && (
-            <p className="text-red-500 mb-1 text-lg font-semibold">
+            <p className="text-red-500 mb-2 text-lg font-semibold">
               Código inválido!
             </p>
           )}
