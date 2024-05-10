@@ -1,12 +1,13 @@
 "use client";
 
 import Modal from "@/components/Modal";
-import ResgateModal from "@/components/ResgateModal";
+import GenericModal from "@/components/GenericModal";
 import { setCoordenadas } from "@/store/slices/mapSlice";
 import { getSolicitacaoById } from "@/store/slices/solicitacaoSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import api from "../../../api";
 
 const page = () => {
   const solicitacao = useAppSelector((state) => state.solicitacoes.solicitacao);
@@ -14,6 +15,8 @@ const page = () => {
   const router = useRouter();
   const [modal, setModal] = useState(false);
   const [action, setAction] = useState(false);
+  const [hash, setHash] = useState("");
+  const [validate, setValidate] = useState(true);
   useEffect(() => {
     if (solicitacao.createdAt === undefined) {
       router.back();
@@ -21,32 +24,60 @@ const page = () => {
   }, []);
 
   const handleModal = () => (modal ? setModal(false) : setModal(true));
+  const handleValidation = () => {
+    api
+      .get(`/solicitacoes/hash?hash=${hash}&id=${solicitacao.id}`)
+      .then((res) => {
+        if (res.status == 200) {
+          if ((res.data as boolean) === true) {
+            setValidate(true);
+          } else {
+            setValidate(false);
+          }
+        }
+      });
+  };
   const handleAction = () => {};
 
   return (
     <div>
       {modal && (
-        <ResgateModal title="Confirmar resgate">
+        <GenericModal title="Confirmar resgate">
           <p>
-            Insira abaixo o código de resgate ou se você não o tiver, envia uma
-            solicitação de conclusão no formulário abaixo:
+            Insira abaixo o código de resgate recebido no momento da
+            solicitação.
           </p>
           <div className="flex flex-col items-start lg:flex-row mt-3 mb-5 lg:items-center">
             <label htmlFor="codigo" className="text-sm my-1 lg:my-0 ">
-              Código de resgate:{" "}
+              Código de resgate:
             </label>
             <input
               type="text"
               placeholder="Código"
               className="mx-0 lg:mx-1 p-0.5 rounded border"
               maxLength={6}
+              value={hash}
+              onChange={(e) => setHash(e.target.value)}
             />
-            <button className="bg-green-500 rounded px-2 py-1 my-1 lg:my-0  text-white mx-0 lg:mx-2 hover:bg-green-600">
+            <button
+              className="bg-blue-500 rounded px-2 py-1 my-1 lg:my-0 
+            text-white mx-0 lg:mx-2 hover:bg-blue-600"
+              onClick={handleValidation}
+            >
               Validar
             </button>
           </div>
+          {!validate && (
+            <p className="text-red-500 mb-1 text-lg font-semibold">
+              Código inválido!
+            </p>
+          )}
           <hr className="my-2" />
           <div className="flex flex-col">
+            <p>
+              Se você não tiver o código de resgate, envie uma mensagem de
+              pedido de conclusão no formulário abaixo.
+            </p>
             <label htmlFor="mensagem">Mensagem:</label>
             <textarea
               rows={5}
@@ -73,13 +104,13 @@ const page = () => {
               Cancelar
             </button>
           </div>
-        </ResgateModal>
+        </GenericModal>
       )}
 
       <div className="flex flex-row justify-between pb-2">
         <h2>{solicitacao.situacao}</h2>
         <button
-          className="bg-green-500 shadow hover:bg-green-600 rounded px-7 py-1 text-sm text-white"
+          className="shadow border border-gray-600 hover:bg-gray-600 hover:text-white text-gray-600 rounded px-7 py-1 text-sm"
           onClick={() => router.back()}
         >
           Voltar
@@ -130,12 +161,19 @@ const page = () => {
         <p>Cidade: {solicitacao.endereco.cidade}</p>
         <p>CEP: {solicitacao.endereco.cep}</p>
       </div>
-      <button
-        onClick={handleModal}
-        className="bg-green-500 rounded py-2 px-3 my-2 w-full text-white font-bold shadow text-lg hover:bg-green-600"
-      >
-        Fui resgatado!
-      </button>
+      <hr className="my-2" />
+      {solicitacao.ativa ? (
+        <button
+          onClick={handleModal}
+          className="bg-green-500 rounded py-2 px-3 my-2 w-full text-white font-bold shadow text-lg hover:bg-green-600"
+        >
+          Confirmar resgate!
+        </button>
+      ) : (
+        <div className="flex flex-row p-3 w-full justify-center items-center">
+          <h2 className="text-green-500 font-bold text-3xl">Resgatado!</h2>
+        </div>
+      )}
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { MapContainer } from "react-leaflet/MapContainer";
 import { TileLayer } from "react-leaflet/TileLayer";
 import L, { LatLngExpression } from "leaflet";
 import LocationMarker from "./LocationMarker";
-import { red } from "@/utils/MarkerIcons";
+import { green, red } from "@/utils/MarkerIcons";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import {
   getAllCoordenadas,
@@ -73,13 +73,6 @@ const Mapa = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               className="z-0"
             />
-            <CircleMarker
-              center={mapState.coordenadas as LatLngExpression}
-              radius={20}
-              weight={1}
-              fillColor="#d92"
-              color="#e33"
-            />
             <div className="map-buttons">
               <button
                 type="submit"
@@ -100,14 +93,20 @@ const Mapa = () => {
               coordenadas?.map((el, key) => (
                 <Marker
                   key={key}
-                  icon={red}
+                  icon={el.ativa ? red : green}
                   position={
                     el.coordenadas
                       .split(",")
                       .map((item) => parseFloat(item)) as LatLngExpression
                   }
                 >
-                  <Popup>Número de pessoas: {el.numeroPessoas}</Popup>
+                  {el.ativa ? (
+                    <Popup>Número de pessoas: {el.numeroPessoas}</Popup>
+                  ) : (
+                    <Popup>
+                      <p className="text-green-500">Resgatado</p>
+                    </Popup>
+                  )}
                 </Marker>
               ))}
           </MapContainer>

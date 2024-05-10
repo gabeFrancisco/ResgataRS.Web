@@ -20,7 +20,9 @@ const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
         dispatch(getSolicitacaoById(parseInt(props.id!)));
         router.push("/solicitacao");
       }}
-      className="flex flex-col border rounded p-2 my-2 shadow hover:bg-gray-50 cursor-pointer"
+      className={`flex flex-col border ${
+        !props.ativa && "border-green-400"
+      } rounded p-2 my-2 shadow hover:bg-gray-50 cursor-pointer`}
     >
       <div className="flex flex-row justify-between items-baseline">
         <h2>{props.solicitante.nome}</h2>
@@ -37,9 +39,12 @@ const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
         <p>
           Local: {props.endereco.cidade} - {props.endereco.bairro}
         </p>
-        <p className="text-orange-600">
+        <p className="text-gray-600">
           Número de pessoas: {props.numeroPessoas}
         </p>
+        {!props.ativa && (
+          <h4 className="text-md font-bold text-green-500">Resgatado!</h4>
+        )}
       </div>
     </div>
   );

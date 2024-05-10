@@ -1,9 +1,8 @@
 "use client";
 
-import { useFormik, validateYupSchema } from "formik";
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import api from "../../../api";
 import { Solicitacao } from "@/models/Solicitacao";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/store/store";
@@ -12,25 +11,38 @@ import axios from "axios";
 import { postSolicitacao } from "@/store/slices/solicitacaoSlice";
 import { useRouter } from "next/navigation";
 import Modal from "@/components/Modal";
-import { flightRouterStateSchema } from "next/dist/server/app-render/types";
+import GenericModal from "@/components/GenericModal";
 
 const page = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const mapState = useAppSelector((state) => state.map);
+  const solicitaoesState = useAppSelector((state) => state.solicitacoes);
   const [enviado, setEnviado] = useState(true);
+  const [submit, setSubmit] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [hashModal, setHashModal] = useState(false);
+  const [concluido, setConcluido] = useState(false);
+
+  useEffect(() => {
+    if (concluido) {
+      setHashModal(true);
+    }
+  }, [concluido]);
+
+  const handleHashModal = () => {
+    hashModal ? setHashModal(false) : setHashModal(true);
+  };
 
   const handleCoordinates = () => {
     dispatch(setSelecao(true));
   };
 
-  const [modal, setModal] = useState(false);
-  const [submit, setSubmit] = useState(false);
   const toggleModal = () => {
     if (modal) {
-      setModal(false);
       setEnviado(true);
       setSubmit(false);
+      setModal(false);
     } else {
       setModal(true);
     }
@@ -115,10 +127,10 @@ const page = () => {
         };
         dispatch(postSolicitacao(solicitacao)).then(() => {
           formik.resetForm();
-          router.replace("/");
           setEnviado(true);
           setSubmit(false);
           setModal(false);
+          setConcluido(true);
         });
       }
       return;
@@ -126,6 +138,47 @@ const page = () => {
   });
   return (
     <div className="text-sm h-full">
+      {hashModal && (
+        <GenericModal title="Código de resgate">
+          <div className="font-md my-2 text-md">
+            <p>
+              Este é o seu código que será usado para encerrar sua solicitação
+              no momento de resgate.
+            </p>
+            <p>Tire um print, salve ou envie para alguém de confiança.</p>
+            <p>
+              Se você perder ou não conseguir salvar, poderá solicitar a
+              conclusão de resgate por mensagem posteriormente.
+            </p>
+            <div className="my-2 flex flex-col lg:flex-row text-lg font-semibold items-start lg:items-baseline">
+              <h4>Seu código: </h4>
+              <h4 className="text-green-600 text-2xl tracking-wide my-3 lg:mx-2 lg:my-0">
+                {solicitaoesState.hash}
+              </h4>
+              <button
+                className="bg-gray-500 hover:bg-gray-600 shadow 
+              text-white rounded mb-3 px-3 py-0.5 text-sm font-normal"
+                onClick={() =>
+                  navigator.clipboard.writeText(solicitaoesState.hash)
+                }
+              >
+                Copiar!
+              </button>
+            </div>
+            <hr className="my-2" />
+            <button
+              type="button"
+              onClick={() => {
+                router.replace("/");
+                handleHashModal();
+              }}
+              className="bg-green-500 rounded px-3 py-2 text-white hover:bg-green-600 shadow w-1/5"
+            >
+              Ok!
+            </button>
+          </div>
+        </GenericModal>
+      )}
       {modal && (
         <Modal
           title="Confirmação de solicitação"

@@ -5,6 +5,8 @@ import api from "../../../api";
 interface SolicitacaoState {
   solicitacao: Solicitacao;
   solicitacaoList: Array<Solicitacao>;
+  hash: string;
+  validated: boolean;
 }
 
 const initialState: SolicitacaoState = {
@@ -12,6 +14,7 @@ const initialState: SolicitacaoState = {
     situacao: "",
     mensagem: "",
     numeroPessoas: 0,
+    ativa: true,
     solicitante: {
       cpf_rg: "",
       nome: "",
@@ -28,6 +31,8 @@ const initialState: SolicitacaoState = {
     },
   },
   solicitacaoList: new Array<Solicitacao>(),
+  hash: "",
+  validated: true,
 };
 
 export const getAllSolicitacoes = createAsyncThunk(
@@ -86,6 +91,19 @@ export const postSolicitacao = createAsyncThunk(
   }
 );
 
+export const validateSolicitacao = createAsyncThunk(
+  "solicitacao/validate",
+  async (data: { hash: string; id: number }) => {
+    return await api
+      .get(`/solicitacoes/hash?hash=${data.hash}&id=${data.id}`)
+      .then((res) => {
+        if (res.status == 200) {
+          return res.data;
+        }
+      });
+  }
+);
+
 export const SolicitacaoSlice = createSlice({
   name: "SolicitacoesSlice",
   initialState,
@@ -105,6 +123,13 @@ export const SolicitacaoSlice = createSlice({
     );
     builder.addCase(getSolicitacaoById.fulfilled, (state, action) => {
       state.solicitacao = action.payload;
+    });
+    builder.addCase(postSolicitacao.fulfilled, (state, action) => {
+      var payload = action.payload as Solicitacao;
+      state.hash = payload.hash!;
+    });
+    builder.addCase(validateSolicitacao.fulfilled, (state, action) => {
+      state.validated = action.payload;
     });
   },
 });

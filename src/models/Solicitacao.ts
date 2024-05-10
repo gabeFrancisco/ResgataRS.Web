@@ -8,4 +8,6 @@ export interface Solicitacao extends BaseEntity {
   numeroPessoas: number;
   solicitante: Solicitante;
   endereco: Endereco;
+  hash?: string;
+  ativa?: boolean;
 }
