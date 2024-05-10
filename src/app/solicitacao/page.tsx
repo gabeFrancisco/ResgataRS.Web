@@ -148,11 +148,11 @@ const page = () => {
         <p className="text-lg">
           <strong>Telefone: {solicitacao.solicitante.telefone}</strong>
         </p>
-        <p className="text-blue-700 mt-1">
+        <p className="text-blue-900 mt-1">
           Data: {new Date(solicitacao.createdAt!).toLocaleString()}
         </p>
         <div className="flex flex-row justify-between items-start">
-          <p className="text-blue-700">
+          <p className="text-blue-900">
             Coordenadas: {solicitacao.endereco.coordenadas}
           </p>
           <button
