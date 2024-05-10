@@ -14,7 +14,11 @@ import {
   setCoordenadas,
   setSelecao,
 } from "@/store/slices/mapSlice";
-import { getAllSolicitacoes } from "@/store/slices/solicitacaoSlice";
+import {
+  getAllSolicitacoes,
+  getSolicitacaoById,
+} from "@/store/slices/solicitacaoSlice";
+import { useRouter } from "next/navigation";
 
 const Mapa = () => {
   const layer = new L.LayerGroup();
@@ -22,6 +26,7 @@ const Mapa = () => {
   const mapRef = useRef<L.Map>(null);
   const mapState = useAppSelector((state) => state.map);
   const coordenadas = useAppSelector((state) => state.map.coordenadasList);
+  const router = useRouter();
 
   const handlePosition = () => {
     mapRef.current?.locate().on("locationfound", (e) => {
@@ -92,6 +97,13 @@ const Mapa = () => {
             {coordenadas.length > 0 &&
               coordenadas?.map((el, key) => (
                 <Marker
+                  eventHandlers={{
+                    click: (e) => {
+                      dispatch(getSolicitacaoById(el.id)).then(() =>
+                        router.push("/solicitacao")
+                      );
+                    },
+                  }}
                   key={key}
                   icon={el.ativa ? red : green}
                   position={
