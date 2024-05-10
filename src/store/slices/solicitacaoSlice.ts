@@ -7,6 +7,7 @@ interface SolicitacaoState {
   solicitacaoList: Array<Solicitacao>;
   hash: string;
   validated: boolean;
+  mensagemEnviada: boolean;
 }
 
 const initialState: SolicitacaoState = {
@@ -33,6 +34,7 @@ const initialState: SolicitacaoState = {
   solicitacaoList: new Array<Solicitacao>(),
   hash: "",
   validated: true,
+  mensagemEnviada: false,
 };
 
 export const getAllSolicitacoes = createAsyncThunk(
@@ -104,6 +106,17 @@ export const validateSolicitacao = createAsyncThunk(
   }
 );
 
+export const enviarMensagem = createAsyncThunk(
+  "solicitacao/mensagem",
+  async (data: { solicitacaoId: number; nome: string; conteudo: string }) => {
+    return await api.post("/solicitacoes/mail", data).then((res) => {
+      if (res.status === 200) {
+        return res.data;
+      }
+    });
+  }
+);
+
 export const SolicitacaoSlice = createSlice({
   name: "SolicitacoesSlice",
   initialState,
@@ -130,6 +143,9 @@ export const SolicitacaoSlice = createSlice({
     });
     builder.addCase(validateSolicitacao.fulfilled, (state, action) => {
       state.validated = action.payload;
+    });
+    builder.addCase(enviarMensagem.fulfilled, (state, action) => {
+      state.mensagemEnviada = action.payload;
     });
   },
 });

@@ -1,20 +1,22 @@
 "use client";
 
-import Modal from "@/components/Modal";
 import GenericModal from "@/components/GenericModal";
 import { setCoordenadas } from "@/store/slices/mapSlice";
-import { getSolicitacaoById } from "@/store/slices/solicitacaoSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import api from "../../../api";
+import solicitacaoSlice, {
+  enviarMensagem,
+} from "@/store/slices/solicitacaoSlice";
 
 const page = () => {
+  const solicitacaoState = useAppSelector((state) => state.solicitacoes);
   const solicitacao = useAppSelector((state) => state.solicitacoes.solicitacao);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [modal, setModal] = useState(false);
-  const [action, setAction] = useState(false);
+  const [mensagem, setMensagem] = useState("");
   const [hash, setHash] = useState("");
   const [validate, setValidate] = useState(true);
   useEffect(() => {
@@ -37,7 +39,27 @@ const page = () => {
         }
       });
   };
-  const handleAction = () => {};
+  const handleMensagem = () => {
+    dispatch(
+      enviarMensagem({
+        solicitacaoId: solicitacao.id!,
+        nome: solicitacao.solicitante.nome,
+        conteudo: mensagem,
+      })
+    ).then(() => {
+      if (solicitacaoState.mensagemEnviada) {
+        setModal(false);
+      } else {
+        setModal(false);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (solicitacaoState.mensagemEnviada) {
+      alert("Mensagem enviada com sucesso!");
+    }
+  }, [solicitacaoState]);
 
   return (
     <div>
@@ -85,10 +107,12 @@ const page = () => {
               id="mensagem"
               placeholder="Insira a sua mensagem"
               className="p-1 my-1 text-sm rounded border"
+              value={mensagem}
+              onChange={(e) => setMensagem(e.target.value)}
             ></textarea>
             <button
               type="button"
-              onClick={handleModal}
+              onClick={handleMensagem}
               className="bg-green-500 rounded hover:bg-green-600 shadow p-1 text-white my-2 w-1/4"
             >
               Enviar
