@@ -24,11 +24,7 @@ const page = () => {
 
   useEffect(() => {
     if (params.id) {
-      dispatch(getSolicitacaoById(parseInt(params.id as string))).then(() => {
-        if (solicitacao.situacao === "") {
-          router.replace("/");
-        }
-      });
+      dispatch(getSolicitacaoById(parseInt(params.id as string)));
     } else {
       router.replace("/");
     }

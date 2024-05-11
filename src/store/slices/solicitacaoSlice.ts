@@ -50,12 +50,15 @@ export const getAllSolicitacoes = createAsyncThunk(
 export const getSolicitacaoById = createAsyncThunk(
   "solicitacao/getById",
   async (data: number) =>
-    await api.get(`/solicitacoes/${data}`).then((res) => {
-      if (res.status === 200) {
-        console.log(res.data);
-        return res.data;
-      }
-    })
+    await api
+      .get(`/solicitacoes/${data}`)
+      .then((res) => {
+        if (res.status === 200) {
+          console.log(res.data);
+          return res.data;
+        }
+      })
+      .catch(() => window.location.replace("/"))
 );
 
 export const getAllSolicitacoesByNome = createAsyncThunk(
