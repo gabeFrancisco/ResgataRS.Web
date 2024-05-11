@@ -17,8 +17,7 @@ const SolicitacaoCard = ({ props }: { props: Solicitacao }) => {
         dispatch(
           setCoordenadas(props.endereco.coordenadas.split(",").map(Number))
         );
-        dispatch(getSolicitacaoById(props.id!));
-        router.push("/solicitacao");
+        router.push(`/solicitacao/${props.id}`);
       }}
       className={`flex flex-col border ${
         !props.ativa && "border-green-400"

@@ -127,7 +127,7 @@ const page = () => {
         };
         dispatch(postSolicitacao(solicitacao)).then(() => {
           formik.resetForm();
-          setEnviado(true);
+          setEnviado(false);
           setSubmit(false);
           setModal(false);
           setConcluido(true);

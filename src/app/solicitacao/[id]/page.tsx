@@ -3,14 +3,16 @@
 import GenericModal from "@/components/GenericModal";
 import { setCoordenadas } from "@/store/slices/mapSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import api from "../../../api";
+import api from "../../../../api";
 import solicitacaoSlice, {
   enviarMensagem,
+  getSolicitacaoById,
 } from "@/store/slices/solicitacaoSlice";
 
 const page = () => {
+  const params = useParams();
   const solicitacaoState = useAppSelector((state) => state.solicitacoes);
   const solicitacao = useAppSelector((state) => state.solicitacoes.solicitacao);
   const dispatch = useAppDispatch();
@@ -19,9 +21,16 @@ const page = () => {
   const [mensagem, setMensagem] = useState("");
   const [hash, setHash] = useState("");
   const [validate, setValidate] = useState(true);
+
   useEffect(() => {
-    if (solicitacao.createdAt === undefined) {
-      router.back();
+    if (params.id) {
+      dispatch(getSolicitacaoById(parseInt(params.id as string))).then(() => {
+        if (solicitacao.situacao === "") {
+          router.replace("/");
+        }
+      });
+    } else {
+      router.replace("/");
     }
   }, []);
 
