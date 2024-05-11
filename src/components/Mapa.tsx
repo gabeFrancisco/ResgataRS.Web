@@ -100,7 +100,7 @@ const Mapa = () => {
                   eventHandlers={{
                     click: (e) => {
                       dispatch(getSolicitacaoById(el.id)).then(() =>
-                        router.push("/solicitacao")
+                        router.push(`/solicitacao/${el.id}`)
                       );
                     },
                   }}
