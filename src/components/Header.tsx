@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <div className="flex flex-row bg-green-500 text-white shadow py-3 px-5">
       <div className="mx-5">
-        <h3>Resgata RS!</h3>
+        <h3>Resgate RS!</h3>
       </div>
       <div className="mx-10 ">
         <ul className="flex flex-row">
